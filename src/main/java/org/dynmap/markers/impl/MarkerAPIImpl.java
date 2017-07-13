@@ -140,6 +140,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         public int minzoom;
         public int maxzoom;
         public boolean markup;
+		public String dasharray;
         
         public AreaMarkerUpdated(AreaMarker m, boolean deleted) {
             this.id = m.getMarkerID();
@@ -162,6 +163,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             this.minzoom = m.getMinZoom();
             this.maxzoom = m.getMaxZoom();
             this.markup = m.isLabelMarkup();
+			this.dasharray = m.getLineDashArray();
 
             this.set = m.getMarkerSet().getMarkerSetID();
             if(deleted) 
@@ -197,6 +199,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         public String desc;
         public int minzoom;
         public int maxzoom;
+		public String dasharray;
         
         public PolyLineMarkerUpdated(PolyLineMarker m, boolean deleted) {
             this.id = m.getMarkerID();
@@ -216,6 +219,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             desc = m.getDescription();
             this.minzoom = m.getMinZoom();
             this.maxzoom = m.getMaxZoom();
+			this.dasharray = m.getLineDashArray();
 
             this.set = m.getMarkerSet().getMarkerSetID();
             if(deleted) 
@@ -255,6 +259,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         public String desc;
         public int minzoom;
         public int maxzoom;
+		public String dasharray;
         
         public CircleMarkerUpdated(CircleMarker m, boolean deleted) {
             this.id = m.getMarkerID();
@@ -272,6 +277,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             desc = m.getDescription();
             this.minzoom = m.getMinZoom();
             this.maxzoom = m.getMaxZoom();
+			this.dasharray = m.getLineDashArray();
 
             this.set = m.getMarkerSet().getMarkerSetID();
             if(deleted) 
@@ -814,6 +820,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             double sopacity = marker.getLineOpacity();
             double fopacity = marker.getFillOpacity();
             int sweight = marker.getLineWeight();
+            String sdasharray = marker.getLineDashArray();
             boolean boost = marker.getBoostFlag();
             int minzoom = marker.getMinZoom();
             int maxzoom = marker.getMaxZoom();
@@ -833,6 +840,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             val = parms.get(ARG_STROKEWEIGHT);
             if(val != null)
                 sweight = Integer.parseInt(val);
+            val = parms.get(ARG_DASHARRAY);
+            if(val != null)
+                sdasharray = val;
             val = parms.get(ARG_YTOP);
             if(val != null)
                 ytop = Double.parseDouble(val);
@@ -855,7 +865,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                     return false;
                 }
             }
-            marker.setLineStyle(sweight, sopacity, scolor);
+            marker.setLineStyle(sweight, sopacity, scolor, sdasharray);
             marker.setFillStyle(fopacity, fcolor);
             if(ytop >= ybottom)
                 marker.setRangeY(ytop, ybottom);
@@ -877,6 +887,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             int scolor = marker.getLineColor();
             double sopacity = marker.getLineOpacity();
             int sweight = marker.getLineWeight();
+			String dasharray = marker.getLineDashArray();
             int minzoom = marker.getMinZoom();
             int maxzoom = marker.getMaxZoom();
 
@@ -889,6 +900,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             val = parms.get(ARG_STROKEWEIGHT);
             if(val != null)
                 sweight = Integer.parseInt(val);
+            val = parms.get(ARG_DASHARRAY);
+            if(val != null)
+                sdasharray = val;
             val = parms.get(ARG_MINZOOM);
             if(val != null)
                 minzoom = Integer.parseInt(val);
@@ -913,6 +927,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             double sopacity = marker.getLineOpacity();
             double fopacity = marker.getFillOpacity();
             int sweight = marker.getLineWeight();
+			String dasharray = marker.getLineDashArray();
             double xr = marker.getRadiusX();
             double zr = marker.getRadiusZ();
             double x = marker.getCenterX();
@@ -922,7 +937,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             boolean boost = marker.getBoostFlag();
             int minzoom = marker.getMinZoom();
             int maxzoom = marker.getMaxZoom();
-            
+
             val = parms.get(ARG_STROKECOLOR);
             if(val != null)
                 scolor = Integer.parseInt(val, 16);
@@ -938,6 +953,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             val = parms.get(ARG_STROKEWEIGHT);
             if(val != null)
                 sweight = Integer.parseInt(val);
+            val = parms.get(ARG_DASHARRAY);
+            if(val != null)
+                sdasharray = val;
             val = parms.get(ARG_X);
             if(val != null)
                 x = Double.parseDouble(val);
@@ -978,7 +996,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 maxzoom = Integer.parseInt(val);
             }
             marker.setCenter(world, x, y, z);
-            marker.setLineStyle(sweight, sopacity, scolor);
+            marker.setLineStyle(sweight, sopacity, scolor, sdasharray);
             marker.setFillStyle(fopacity, fcolor);
             marker.setRadius(xr, zr);
             marker.setBoostFlag(boost);
@@ -1016,6 +1034,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     private static final String ARG_STROKEOPACITY = "opacity";
     private static final String ARG_FILLCOLOR = "fillcolor";
     private static final String ARG_FILLOPACITY = "fillopacity";
+    private static final String ARG_DASHARRAY = "dasharray";
     private static final String ARG_YTOP = "ytop";
     private static final String ARG_YBOTTOM = "ybottom";
     private static final String ARG_RADIUSX = "radiusx";
@@ -1028,7 +1047,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     private static final String ARG_WORLD = "world";
     private static final String ARG_BOOST = "boost";
     private static final String ARG_DESC = "desc";
-    
+
     /* Parse argument strings : handle 'attrib:value' and quoted strings */
     private static Map<String,String> parseArgs(String[] args, DynmapCommandSender snd) {
         HashMap<String,String> rslt = new HashMap<String,String>();
@@ -2157,7 +2176,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                     ", world:" + m.getWorld() + ", corners:" + ptlist + 
                     ", weight:" + m.getLineWeight() + ", color:" + String.format("%06x", m.getLineColor()) +
                     ", opacity:" + m.getLineOpacity() + ", fillcolor:" + String.format("%06x", m.getFillColor()) +
-                    ", fillopacity:" + m.getFillOpacity() + ", boost:" + m.getBoostFlag() + ", markup:" + m.isLabelMarkup();
+                    ", fillopacity:" + m.getFillOpacity() + ", boost:" + m.getBoostFlag() + ", markup:" + m.isLabelMarkup() +
+					", dasharray:" + m.getLineDashArray();
             if (m.getMinZoom() >= 0) {
                 msg += ", minzoom:" + m.getMinZoom();
             }
@@ -2356,7 +2376,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             String msg = m.getMarkerID() + ": label:\"" + m.getLabel() + "\", set:" + m.getMarkerSet().getMarkerSetID() + 
                     ", world:" + m.getWorld() + ", corners:" + ptlist + 
                     ", weight: " + m.getLineWeight() + ", color:" + String.format("%06x", m.getLineColor()) +
-                    ", opacity: " + m.getLineOpacity() + ", markup:" + m.isLabelMarkup();
+                    ", opacity: " + m.getLineOpacity() + ", markup:" + m.isLabelMarkup() +
+					", dasharray:" + m.getLineDashArray();
             if (m.getMinZoom() >= 0) {
                 msg += ", minzoom:" + m.getMinZoom();
             }
@@ -2560,7 +2581,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                     ", radius:" + m.getRadiusX() + "/" + m.getRadiusZ() +
                     ", weight: " + m.getLineWeight() + ", color:" + String.format("%06x", m.getLineColor()) +
                     ", opacity: " + m.getLineOpacity() + ", fillcolor: " + String.format("%06x", m.getFillColor()) +
-                    ", fillopacity: " + m.getFillOpacity() + ", boost:" + m.getBoostFlag() + ", markup:" + m.isLabelMarkup();
+                    ", fillopacity: " + m.getFillOpacity() + ", boost:" + m.getBoostFlag() + ", markup:" + m.isLabelMarkup() +
+					", dasharray:" + m.getLineDashArray();
             if (m.getMinZoom() >= 0) {
                 msg += ", minzoom:" + m.getMinZoom();
             }
@@ -3010,6 +3032,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 if (m.getMaxZoom() >= 0) {
                     mdata.put("maxzoom", m.getMaxZoom());
                 }
+                if(m.getLineDashArray() != null)
+                    mdata.put("dasharray", m.getLineDashArray());
                 /* Add to markers */
                 areas.put(m.getMarkerID(), mdata);
             }
@@ -3045,6 +3069,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 if (m.getMaxZoom() >= 0) {
                     mdata.put("maxzoom", m.getMaxZoom());
                 }
+                if(m.getLineDashArray() != null)
+                    mdata.put("dasharray", m.getLineDashArray());
                 /* Add to markers */
                 lines.put(m.getMarkerID(), mdata);
             }
@@ -3075,6 +3101,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 if (m.getMaxZoom() >= 0) {
                     mdata.put("maxzoom", m.getMaxZoom());
                 }
+                if(m.getLineDashArray() != null)
+                    mdata.put("dasharray", m.getLineDashArray());
                 /* Add to markers */
                 circles.put(m.getMarkerID(), mdata);
             }

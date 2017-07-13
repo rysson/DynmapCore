@@ -35,7 +35,8 @@ class AreaMarkerImpl implements AreaMarker {
     private boolean boostflag = false;
     private int minzoom;
     private int maxzoom;
-    
+    private String linedasharray;
+
     private static class Coord {
         double x, z;
         Coord(double x, double z) {
@@ -132,6 +133,7 @@ class AreaMarkerImpl implements AreaMarker {
         boostflag = node.getBoolean("boostFlag",  false);
         minzoom = node.getInteger("minzoom", -1);
         maxzoom = node.getInteger("maxzoom", -1);
+        linedasharray = node.getString("lineDashArray", null);
 
         ispersistent = true;    /* Loaded from config, so must be */
         
@@ -175,7 +177,7 @@ class AreaMarkerImpl implements AreaMarker {
     public void setLabel(String lbl) {
         setLabel(lbl, false);
     }
-    
+
     @Override
     public void setLabel(String lbl, boolean markup) {
         if(markerset == null) return;
@@ -222,6 +224,9 @@ class AreaMarkerImpl implements AreaMarker {
         }
         if (maxzoom >= 0) {
             node.put("maxzoom", maxzoom);
+        }
+        if (linedasharray != null && !linedasharray.isEmpty()) {
+            node.put("lineDashArray", linedasharray);
         }
         return node;
     }
@@ -348,12 +353,13 @@ class AreaMarkerImpl implements AreaMarker {
         bb_cache = null;
     }
     @Override
-    public void setLineStyle(int weight, double opacity, int color) {
+    public void setLineStyle(int weight, double opacity, int color, String dasharray) {
         if(markerset == null) return;
-        if((weight != lineweight) || (opacity != lineopacity) || (color != linecolor)) {
+        if((weight != lineweight) || (opacity != lineopacity) || (color != linecolor) || (dasharray != linedasharray)) {
             lineweight = weight;
             lineopacity = opacity;
             linecolor = color;
+            linedasharray = dasharray;
             MarkerAPIImpl.areaMarkerUpdated(this, MarkerUpdate.UPDATED);
             if(ispersistent)
                 MarkerAPIImpl.saveMarkers();
@@ -370,6 +376,10 @@ class AreaMarkerImpl implements AreaMarker {
     @Override
     public int getLineColor() {
         return linecolor;
+    }
+    @Override
+    public int getLineDashArray() {
+        return linedasharray;
     }
     @Override
     public void setFillStyle(double opacity, int color) {

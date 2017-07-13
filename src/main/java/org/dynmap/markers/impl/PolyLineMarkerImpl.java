@@ -26,15 +26,16 @@ class PolyLineMarkerImpl implements PolyLineMarker {
     private int linecolor = 0xFF0000;
     private int minzoom;
     private int maxzoom;
-    
+	private String linedasharray;
+
     private static class Coord {
         double x, y, z;
         Coord(double x, double y, double z) {
             this.x = x; this.y = y; this.z = z;
         }
     }
-    
-    /** 
+
+    /**
      * Create poly-line marker
      * @param id - marker ID
      * @param lbl - label
@@ -109,15 +110,15 @@ class PolyLineMarkerImpl implements PolyLineMarker {
         this.minzoom = node.getInteger("minzoom", -1);
         this.maxzoom = node.getInteger("maxzoom", -1);
         ispersistent = true;    /* Loaded from config, so must be */
-        
+
         return true;
     }
-    
+
     void cleanup() {
         corners.clear();
         markerset = null;
     }
-    
+
     @Override
     public String getMarkerID() {
         return markerid;
@@ -149,7 +150,7 @@ class PolyLineMarkerImpl implements PolyLineMarker {
     public void setLabel(String lbl) {
         setLabel(lbl, false);
     }
-    
+
     @Override
     public void setLabel(String lbl, boolean markup) {
         if(markerset == null) return;
@@ -306,12 +307,13 @@ class PolyLineMarkerImpl implements PolyLineMarker {
             MarkerAPIImpl.saveMarkers();
     }
     @Override
-    public void setLineStyle(int weight, double opacity, int color) {
+    public void setLineStyle(int weight, double opacity, int color, String dasharray) {
         if(markerset == null) return;
-        if((weight != lineweight) || (opacity != lineopacity) || (color != linecolor)) {
+        if((weight != lineweight) || (opacity != lineopacity) || (color != linecolor) || (dasharray != linedasharray)) {
             lineweight = weight;
             lineopacity = opacity;
             linecolor = color;
+            linedasharray = dasharray;
             MarkerAPIImpl.polyLineMarkerUpdated(this, MarkerUpdate.UPDATED);
             if(ispersistent)
                 MarkerAPIImpl.saveMarkers();
@@ -329,6 +331,11 @@ class PolyLineMarkerImpl implements PolyLineMarker {
     public int getLineColor() {
         return linecolor;
     }
+    @Override
+    public int getLineDashArray() {
+        return linedasharray;
+    }
+
     @Override
     public void setMarkerSet(MarkerSet newset) {
         if(markerset != null) {

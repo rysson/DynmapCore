@@ -64,18 +64,21 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 				$.each(markerset.areas, function(aname, area) {
 					ms.areas[aname] = { label: area.label, markup: area.markup, desc: area.desc, x: area.x, z: area.z,
 						ytop: area.ytop, ybottom: area.ybottom, color: area.color, weight: area.weight, opacity: area.opacity,
-						fillcolor: area.fillcolor, fillopacity: area.fillopacity, minzoom: area.minzoom || -1, maxzoom: area.maxzoom || -1 };
+						fillcolor: area.fillcolor, fillopacity: area.fillopacity, minzoom: area.minzoom || -1, maxzoom: area.maxzoom || -1,
+						dashArray: line.dasharray || null };
 					createArea(ms, ms.areas[aname], ts);
 				});
 				$.each(markerset.lines, function(lname, line) {
 					ms.lines[lname] = { label: line.label, markup: line.markup, desc: line.desc, x: line.x, y: line.y, z: line.z,
-						color: line.color, weight: line.weight, opacity: line.opacity, minzoom: line.minzoom || -1, maxzoom: line.maxzoom || -1 };
+						color: line.color, weight: line.weight, opacity: line.opacity, minzoom: line.minzoom || -1, maxzoom: line.maxzoom || -1,
+						dashArray: line.dasharray || null };
 					createLine(ms, ms.lines[lname], ts);
 				});
 				$.each(markerset.circles, function(cname, circle) {
 					ms.circles[cname] = { label: circle.label, markup: circle.markup, desc: circle.desc, x: circle.x, y: circle.y, z: circle.z,
 						xr: circle.xr, zr: circle.zr, color: circle.color, weight: circle.weight, opacity: circle.opacity,
-						fillcolor: circle.fillcolor, fillopacity: circle.fillopacity, minzoom: circle.minzoom || -1, maxzoom: circle.maxzoom || -1 };
+						fillcolor: circle.fillcolor, fillopacity: circle.fillopacity, minzoom: circle.minzoom || -1, maxzoom: circle.maxzoom || -1,
+						dashArray: line.dasharray || null };
 					createCircle(ms, ms.circles[cname], ts);
 				});
 			});
@@ -208,7 +211,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 	}
 	
 	function createLine(set, line, ts) {
-		var style = { color: line.color, opacity: line.opacity, weight: line.weight, smoothFactor: 0.0 };
+		var style = { color: line.color, opacity: line.opacity, weight: line.weight, smoothFactor: 0.0, dashArray: line.dashArray };
 
 		if(line.our_layer) {
 			set.layergroup.removeLayer(line.our_layer);
@@ -436,7 +439,8 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			deleteMarker(set, set.lines[msg.id]);
 			
 			var line = { x: msg.x, y: msg.y, z: msg.z, label: msg.label, markup: msg.markup, desc: msg.desc,
-				color: msg.color, weight: msg.weight, opacity: msg.opacity, minzoom: msg.minzoom || -1, maxzoom: msg.maxzoom || -1 };
+				color: msg.color, weight: msg.weight, opacity: msg.opacity, minzoom: msg.minzoom || -1,
+				maxzoom: msg.maxzoom || -1, dashArray: msg.dashArray || null };
 			set.lines[msg.id] = line;
 			createLine(set, line, msg.timestamp);
 		}

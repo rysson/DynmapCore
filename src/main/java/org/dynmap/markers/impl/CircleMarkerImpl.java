@@ -34,6 +34,7 @@ class CircleMarkerImpl implements CircleMarker {
     private boolean boostflag = false;
     private int minzoom = -1;
     private int maxzoom = -1;
+	private String linedasharray;
 
     private static class BoundingBox {
         double xmin, xmax;
@@ -233,11 +234,12 @@ class CircleMarkerImpl implements CircleMarker {
         return this.desc;
     }
     @Override
-    public void setLineStyle(int weight, double opacity, int color) {
-        if((weight != lineweight) || (opacity != lineopacity) || (color != linecolor)) {
+    public void setLineStyle(int weight, double opacity, int color, String dasharray) {
+        if((weight != lineweight) || (opacity != lineopacity) || (color != linecolor || (dasharray != linedasharray)) {
             lineweight = weight;
             lineopacity = opacity;
             linecolor = color;
+			linedasharray = dasharray;
             MarkerAPIImpl.circleMarkerUpdated(this, MarkerUpdate.UPDATED);
             if(ispersistent)
                 MarkerAPIImpl.saveMarkers();
@@ -254,6 +256,10 @@ class CircleMarkerImpl implements CircleMarker {
     @Override
     public int getLineColor() {
         return linecolor;
+    }
+    @Override
+    public int getLineDashArray() {
+        return linedasharray;
     }
     @Override
     public void setFillStyle(double opacity, int color) {
